@@ -269,50 +269,6 @@ print(f"Средний release_year: {original_clean['release_year'].mean():.1f}
 print(f"Средняя spotify_popularity: {original_clean['spotify_popularity'].mean():.1f} → {df_clean['spotify_popularity'].mean():.1f}")
 print(f"Количество записей: {len(original_clean)} → {len(df_clean)}")
 
-#1.2.13
-genre_stats = df_clean.groupby('genre_clean').agg({
-    'rank_2020': 'mean',
-    'spotify_popularity': 'mean',
-    'release_year': 'mean',
-    'album': 'count'
-}).round(1)
-genre_stats.columns = ['Средний рейтинг', 'Средняя Spotify популярность', 'Средний год выпуска', 'Количество']
-genre_stats = genre_stats.sort_values('Средний рейтинг')
-print("Топ-10 жанров по среднему рейтингу (меньше = лучше):")
-print(genre_stats.head(10))
-decade_stats = df_clean.groupby('decade').agg({
-    'rank_2020': 'median',
-    'spotify_popularity': 'mean',
-    'artist_member_count': 'mean'
-}).round(1)
-print("\nСтатистика по десятилетиям:")
-print(decade_stats)
-gender_stats = df_clean.groupby('gender_code').agg({
-    'rank_2020': 'median',
-    'spotify_popularity': 'mean',
-    'artist_member_count': 'mean',
-    'album': 'count'
-}).round(1)
-print("\nСтатистика по полу исполнителя:")
-print(gender_stats)
-fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-
-top_genres_count = genre_stats.nlargest(10, 'Количество')
-axes[0].barh(top_genres_count.index, top_genres_count['Количество'], color='skyblue')
-axes[0].set_title('Топ-10 жанров по количеству альбомов в топ-500')
-axes[0].set_xlabel('Количество альбомов')
-
-decade_stats_filtered = decade_stats.dropna().sort_index()
-axes[1].plot(decade_stats_filtered.index, decade_stats_filtered['spotify_popularity'],
-             marker='o', color='coral', linewidth=2)
-axes[1].set_title('Средняя Spotify популярность по десятилетиям')
-axes[1].set_xlabel('Десятилетие')
-axes[1].set_ylabel('Средняя популярность')
-axes[1].grid(True, alpha=0.3)
-
-plt.tight_layout()
-plt.show()
-
 #1.3.1
 categorical_features = ['genre_clean', 'type', 'artist_gender', 'rank_category', 'age_category', 'decade']
 
